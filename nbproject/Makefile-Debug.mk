@@ -21,7 +21,7 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-Linux-x86
+CND_PLATFORM=GNU-Linux
 CND_DLIB_EXT=so
 CND_CONF=Debug
 CND_DISTDIR=dist
@@ -45,7 +45,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-ffreestanding -Wall -Wextra -masm=intel -fvisibility=hidden -Wl,-init,libInit
 
 # CC Compiler Flags
 CCFLAGS=
@@ -66,7 +66,7 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libext2.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libext2.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libext2.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -nostdlib -T linker.ld -ffreestanding -shared -fPIC
 
 ${OBJECTDIR}/src/ext2Init.o: src/ext2Init.c 
 	${MKDIR} -p ${OBJECTDIR}/src
