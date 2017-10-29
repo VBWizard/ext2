@@ -1,6 +1,7 @@
 #include "ext2.h"
+#include "ext2session.h"
 
-void libInit(void* mallocFunction, void* freeFunction)
+void ext2init(void* mallocFunction, void* freeFunction)
 {
     mallocF=mallocFunction;
     freeF=freeFunction;
@@ -8,17 +9,16 @@ void libInit(void* mallocFunction, void* freeFunction)
     memset(fileHandles,0,FILE_HANDLE_MAX_COUNT*sizeof(sFile));
     sessions=mallocF(SESSION_MAX_COUNT * sizeof(sExt2Session));
     memset(sessions,0,sizeof(sExt2Session)*SESSION_MAX_COUNT);
-    readBuffer=NULL;
-    readBufferStartBlock=-1;
+    globalBlockBuffer=NULL;
+    globalBlockBufferStartBlock=-1;
     libInitialized=true;
 }
 
-void libClose(void)
+void ext2deinit(void)
 {
     freeF(fileHandles);
     freeF(sessions);
-    if (readBuffer!=NULL)
-        freeF(readBuffer);
+    if (globalBlockBuffer!=NULL)
+        freeF(globalBlockBuffer);
     libInitialized=false;
 }
-

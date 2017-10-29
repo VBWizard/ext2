@@ -35,17 +35,21 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/src/ext2Init.o \
-	${OBJECTDIR}/src/ext2Main.o \
+	${OBJECTDIR}/src/ext2bits.o \
+	${OBJECTDIR}/src/ext2block.o \
 	${OBJECTDIR}/src/ext2blockgroup.o \
 	${OBJECTDIR}/src/ext2dir.o \
+	${OBJECTDIR}/src/ext2init.o \
 	${OBJECTDIR}/src/ext2inode.o \
+	${OBJECTDIR}/src/ext2main.o \
 	${OBJECTDIR}/src/ext2read.o \
-	${OBJECTDIR}/src/utility.o
+	${OBJECTDIR}/src/ext2session.o \
+	${OBJECTDIR}/src/ext2write.o \
+	${OBJECTDIR}/src/extutility.o
 
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-fvisibility=hidden -masm=intel
 
 # CC Compiler Flags
 CCFLAGS=
@@ -68,15 +72,15 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libext2.${CND_DLIB_EXT}: ${OBJECTFILE
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libext2.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
 
-${OBJECTDIR}/src/ext2Init.o: src/ext2Init.c 
+${OBJECTDIR}/src/ext2bits.o: src/ext2bits.c 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2Init.o src/ext2Init.c
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2bits.o src/ext2bits.c
 
-${OBJECTDIR}/src/ext2Main.o: src/ext2Main.c 
+${OBJECTDIR}/src/ext2block.o: src/ext2block.c 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2Main.o src/ext2Main.c
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2block.o src/ext2block.c
 
 ${OBJECTDIR}/src/ext2blockgroup.o: src/ext2blockgroup.c 
 	${MKDIR} -p ${OBJECTDIR}/src
@@ -88,20 +92,40 @@ ${OBJECTDIR}/src/ext2dir.o: src/ext2dir.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2dir.o src/ext2dir.c
 
+${OBJECTDIR}/src/ext2init.o: src/ext2init.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2init.o src/ext2init.c
+
 ${OBJECTDIR}/src/ext2inode.o: src/ext2inode.c 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2inode.o src/ext2inode.c
+
+${OBJECTDIR}/src/ext2main.o: src/ext2main.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2main.o src/ext2main.c
 
 ${OBJECTDIR}/src/ext2read.o: src/ext2read.c 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2read.o src/ext2read.c
 
-${OBJECTDIR}/src/utility.o: src/utility.c 
+${OBJECTDIR}/src/ext2session.o: src/ext2session.c 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/utility.o src/utility.c
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2session.o src/ext2session.c
+
+${OBJECTDIR}/src/ext2write.o: src/ext2write.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2write.o src/ext2write.c
+
+${OBJECTDIR}/src/extutility.o: src/extutility.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.c) -g -DDEBUG -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/extutility.o src/extutility.c
 
 # Subprojects
 .build-subprojects:

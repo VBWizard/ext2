@@ -25,17 +25,6 @@ extern "C" {
 #define BLOCK_OFFSET_FIRSTGROUP(block) (BASE_OFFSET + (block-1)*block_size)
 #define BLOCK_OFFSET(block,block_size) (BASE_OFFSET + (block-1)*block_size)
     
-    typedef struct tExt2Session
-    {
-        int sessionNbr;
-        int (*readFunction)(int, char*, int);
-        int (*writeFunction)(int, char*, int, int);
-        struct ext2_super_block superBlock;
-        int device;
-        int blockSize, inodes_per_block, inode_table_blocks;
-        struct ext2_inode rootDirInode;
-    } sExt2Session;
-
     typedef struct tFile
     {
         int filePtr;
@@ -48,24 +37,40 @@ extern "C" {
         char path[1024];
         int lastBlockFreeSize;
         unsigned int* blockList;
+        unsigned int usedBlockListCount, totalBlockListCount;
+        bool blockList12Used, blockList13Used, blockList14Used;
     } sFile;
 
-int ext2Read (int FILE, char* buffer, int bytes);
-int ext2Write (int FILE, char* buffer, int bytes);
-int ext2Seek (int FILE, int pos, int whence);
+__attribute__((visibility("default"))) int ext2open (int sess, char* fileName);
+__attribute__((visibility("default"))) int ext2close(int FILE);
+__attribute__((visibility("default"))) int ext2seek (int FILE, int pos, int whence);
+__attribute__((visibility("default"))) void ext2init(void* mallocFunction, void* freeFunction);
+__attribute__((visibility("default"))) void ext2deinit(void);
+__attribute__((visibility("default"))) int ext2initsession(void* readFunction, void* writeFunction);
+__attribute__((visibility("default"))) int ext2write (int FILE, char* buffer, int bytes);
 
-    
+    //Pointers to caller's malloc and free functions
     void* (*mallocF)(int);
     void (*freeF)(void*);
-    sFile* fileHandles;
+    
+    //Array of file handle pointers
+    __attribute__((visibility("default"))) sFile* fileHandles;
+    
+    //Boolean identifying whether the library has been initialized
     bool libInitialized;
-    sExt2Session* sessions;
-    sFile* files;
-    void libInit();
-    void libClose();
+    
+    //Array of file pointers
+    __attribute__((visibility("default"))) sFile* files;
+    void ext2init();
+    void ext2deinit();
 
-    char *readBuffer;
-    int readBufferStartBlock;
+    //Pointer to the sequential block buffer
+    __attribute__((visibility("default"))) char *globalBlockBuffer;
+    
+    //Identifies the starting block # in the sequential block buffer
+    __attribute__((visibility("default"))) int globalBlockBufferStartBlock;
+    
+    
     
 #include "ext2Errors.h"
 

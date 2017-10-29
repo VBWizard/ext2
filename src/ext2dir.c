@@ -1,6 +1,7 @@
 #include "ext2dir.h"
 #include "ext2inode.h"
-#include "utility.h"
+#include "ext2utility.h"
+#include "ext2session.h"
 
 int getDir(sFile *file, struct ext2_inode parent, char* dirBuffer, int bufferSize)
 {
@@ -34,11 +35,11 @@ int getDirEntry(sFile *file, struct ext2_inode parent, char* path, int* fileType
     char* buffer=mallocF(sessions[file->sess].rootDirInode.i_size);
     sessions[file->sess].readFunction( (parent.i_block[0]*sessions[file->sess].blockSize)/DISK_SECTOR_SIZE,
             buffer,
-            sectorsForByteCount(sessions[file->sess].rootDirInode.i_size));
+            sectorsForByteCount(dirInode.i_size));
 
     entry = (struct ext2_dir_entry *)buffer;
 
-    while (size<parent.i_size)
+    while (1==1)
     {
         memcpy(file_name, entry->name, entry->name_len);
         file_name[entry->name_len] = 0;              /* append null char to the file name */
@@ -47,7 +48,8 @@ int getDirEntry(sFile *file, struct ext2_inode parent, char* path, int* fileType
             break;
         entry = (void*) entry + entry->rec_len;      /* move to the next entry */
         size += entry->rec_len;
-        file_name[0]=0;
+        if (file_name[0]==0)
+            break;
     }
     if (file_name[0]!=0)
     {

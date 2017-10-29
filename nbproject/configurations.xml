@@ -6,11 +6,15 @@
                    projectFiles="true">
       <itemPath>include/ext2.h</itemPath>
       <itemPath>include/ext2Errors.h</itemPath>
+      <itemPath>include/ext2bits.h</itemPath>
+      <itemPath>include/ext2block.h</itemPath>
       <itemPath>include/ext2blockgroup.h</itemPath>
       <itemPath>include/ext2dir.h</itemPath>
       <itemPath>include/ext2inode.h</itemPath>
       <itemPath>include/ext2read.h</itemPath>
-      <itemPath>include/utility.h</itemPath>
+      <itemPath>include/ext2session.h</itemPath>
+      <itemPath>include/ext2utility.h</itemPath>
+      <itemPath>include/ext2write.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -19,13 +23,17 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>src/ext2Init.c</itemPath>
-      <itemPath>src/ext2Main.c</itemPath>
+      <itemPath>src/ext2bits.c</itemPath>
+      <itemPath>src/ext2block.c</itemPath>
       <itemPath>src/ext2blockgroup.c</itemPath>
       <itemPath>src/ext2dir.c</itemPath>
+      <itemPath>src/ext2init.c</itemPath>
       <itemPath>src/ext2inode.c</itemPath>
+      <itemPath>src/ext2main.c</itemPath>
       <itemPath>src/ext2read.c</itemPath>
-      <itemPath>src/utility.c</itemPath>
+      <itemPath>src/ext2session.c</itemPath>
+      <itemPath>src/ext2write.c</itemPath>
+      <itemPath>src/extutility.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -55,6 +63,7 @@
           <incDir>
             <pElem>include</pElem>
           </incDir>
+          <commandLine>-fvisibility=hidden -masm=intel</commandLine>
           <preprocessorList>
             <Elem>DEBUG</Elem>
           </preprocessorList>
@@ -64,6 +73,10 @@
       </item>
       <item path="include/ext2Errors.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/ext2bits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/ext2block.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="include/ext2blockgroup.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ext2dir.h" ex="false" tool="3" flavor2="0">
@@ -72,21 +85,33 @@
       </item>
       <item path="include/ext2read.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="include/utility.h" ex="false" tool="3" flavor2="0">
+      <item path="include/ext2session.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ext2Init.c" ex="false" tool="0" flavor2="0">
+      <item path="include/ext2utility.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ext2Main.c" ex="false" tool="0" flavor2="0">
+      <item path="include/ext2write.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ext2bits.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2block.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2blockgroup.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2dir.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="src/ext2init.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="src/ext2inode.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2main.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2read.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="src/utility.c" ex="false" tool="0" flavor2="0">
+      <item path="src/ext2session.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2write.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/extutility.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="2">
@@ -111,10 +136,17 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>-fvisibility=hidden</commandLine>
+        </linkerTool>
       </compileType>
       <item path="include/ext2.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ext2Errors.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/ext2bits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/ext2block.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ext2blockgroup.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -124,21 +156,33 @@
       </item>
       <item path="include/ext2read.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="include/utility.h" ex="false" tool="3" flavor2="0">
+      <item path="include/ext2session.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ext2Init.c" ex="false" tool="0" flavor2="0">
+      <item path="include/ext2utility.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ext2Main.c" ex="false" tool="0" flavor2="0">
+      <item path="include/ext2write.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ext2bits.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2block.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2blockgroup.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2dir.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="src/ext2init.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="src/ext2inode.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2main.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2read.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="src/utility.c" ex="false" tool="0" flavor2="0">
+      <item path="src/ext2session.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2write.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/extutility.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -1,44 +1,37 @@
 #include "ext2read.h"
-#include "utility.h"
+#include "ext2utility.h"
+#include "ext2session.h"
 
-int getBlockNumForLoc(int sess, int loc, unsigned int* blockList)
+int getBlockNumForFileOffset(int sess, int loc, unsigned int* blockList)
 {
     int blkNum=loc/sessions[sess].blockSize;
     return blockList[blkNum];
 }
 
-void readDiskBlock(int sess, char* buffer, int block)
+void populateReadBuffer(int sess, int block, int blockSize)
+{
+    sessions[sess].readFunction(block*(blockSize/512),
+            (char*)globalBlockBuffer,
+            (READ_BUFFER_BLOCK_COUNT*blockSize)/512);
+            globalBlockBufferStartBlock=block;
+}
+
+void readDiskBlock(int sess, void* buffer, int block)
 {
     int offset=0;
+    int blockSize=sessions[sess].blockSize;
     
     if (!BLOCK_IS_IN_BUFFER(block))
     {
-        sessions[sess].readFunction(block*(sessions[sess].blockSize/512),
-                (char*)readBuffer,
-                (READ_BUFFER_BLOCK_COUNT*sessions[sess].blockSize)/512);
-                readBufferStartBlock=block;
+        populateReadBuffer(sess, block, blockSize);
     }
-    offset=(block-readBufferStartBlock)*sessions[sess].blockSize;
-    memcpy(buffer,readBuffer+offset,sessions[sess].blockSize);
-}
-
-void readFileBlock(sFile* file, char* buffer, int block)
-{
-    int offset=0;
     
-    if (!BLOCK_IS_IN_BUFFER(block))
-    {
-        sessions[file->sess].readFunction(block*(sessions[file->sess].blockSize/512),
-                (char*)readBuffer,
-                (READ_BUFFER_BLOCK_COUNT*sessions[file->sess].blockSize)/512);
-                readBufferStartBlock=block;
-    }
-    offset=(block-readBufferStartBlock)*sessions[file->sess].blockSize;
-    memcpy(buffer,readBuffer+offset,sessions[file->sess].blockSize);
+    offset=(block-globalBlockBufferStartBlock)*blockSize;
+    memcpy(buffer,globalBlockBuffer+offset,blockSize);
 }
 
 
-int ext2ReadN(int FILE, char* buffer, int bytes)
+__attribute__((visibility("default"))) int ext2ReadN(int FILE, char* buffer, int bytes)
 {
     int realSize=bytes, readSize=0;
     int firstBlockOffset=0;
@@ -52,8 +45,8 @@ int ext2ReadN(int FILE, char* buffer, int bytes)
     if (fileHandles[FILE].offset>fileHandles[FILE].inode.i_size)
         return 0;
 
-    if (readBuffer==NULL)
-        readBuffer=mallocF(READ_BUFFER_BLOCK_COUNT*sessions[fileHandles[FILE].sess].blockSize);
+    if (globalBlockBuffer==NULL)
+        globalBlockBuffer=mallocF(READ_BUFFER_BLOCK_COUNT*sessions[fileHandles[FILE].sess].blockSize);
     
     blockBuffer=mallocF(sessions[fileHandles[FILE].sess].blockSize);
 
@@ -84,9 +77,9 @@ int ext2ReadN(int FILE, char* buffer, int bytes)
     while (bytesRead < realSize)
     {
         //Read a block from the file
-        readFileBlock(&fileHandles[FILE],                           //The file handle
+        readDiskBlock(fileHandles[FILE].sess,                           //The file handle
                 blockBuffer,                                        //The local block buffer
-                getBlockNumForLoc(fileHandles[FILE].sess,           //The block number for the offset in the file
+                getBlockNumForFileOffset(fileHandles[FILE].sess,           //The block number for the offset in the file
                                     fileHandles[FILE].offset,
                                     fileHandles[FILE].blockList));
         //Calculate the size to write to the caller's buffer
