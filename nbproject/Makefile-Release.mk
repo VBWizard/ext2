@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/ext2block.o \
 	${OBJECTDIR}/src/ext2blockgroup.o \
 	${OBJECTDIR}/src/ext2dir.o \
+	${OBJECTDIR}/src/ext2file.o \
 	${OBJECTDIR}/src/ext2init.o \
 	${OBJECTDIR}/src/ext2inode.o \
 	${OBJECTDIR}/src/ext2main.o \
@@ -91,6 +92,11 @@ ${OBJECTDIR}/src/ext2dir.o: src/ext2dir.c
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2dir.o src/ext2dir.c
+
+${OBJECTDIR}/src/ext2file.o: src/ext2file.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -Iinclude -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ext2file.o src/ext2file.c
 
 ${OBJECTDIR}/src/ext2init.o: src/ext2init.c 
 	${MKDIR} -p ${OBJECTDIR}/src

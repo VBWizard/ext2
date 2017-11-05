@@ -12,7 +12,9 @@
 extern "C" {
 #endif
 
-    void getBlockGroupDescriptor(int sess, int blockGroupNum, struct ext2_group_desc* gd);
+#include "ext2file.h"
+    
+    void readBlockGroup(int sess, int blockGroupNum, struct ext2_group_desc* gd);
     void updateBGBitmap(sFile* file, int blockGroupNum, int block, bool used);
     
     typedef struct tsBlockGroupBlockBitmap

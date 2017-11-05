@@ -13,7 +13,8 @@ extern "C" {
 #endif
 
 #include "ext2.h"
-
+#include "ext2file.h"
+    
     int getDirEntry(sFile *file, struct ext2_inode parent, char* path, int* fileType);
     int getDir(sFile *file, struct ext2_inode parent, char* dirBuffer, int bufferSize);
 

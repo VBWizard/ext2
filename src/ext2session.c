@@ -2,7 +2,7 @@
 #include "ext2utility.h"
 #include "ext2inode.h"
 
-int getSuperBlock(int sess)
+int readSuperBlock(int sess)
 {
     sessions[sess].readFunction(1024/DISK_SECTOR_SIZE,(
             char*)&sessions[sess].superBlock,
@@ -11,6 +11,15 @@ int getSuperBlock(int sess)
         return ERROR_BAD_EXT2_MAGIC;
     else
         return 0;
+}
+
+int writeSuperBlock(int sess)
+{
+    if (sessions[sess].superBlock.s_magic!=EXT2_SUPER_MAGIC)
+        return ERROR_BAD_EXT2_MAGIC;
+    sessions[sess].writeFunction(1024/DISK_SECTOR_SIZE,(
+            char*)&sessions[sess].superBlock,
+            sectorsForByteCount(sizeof(sessions[sess].superBlock)));
 }
 
 int ext2initsession(void* readFunction, void* writeFunction)
@@ -43,7 +52,7 @@ int initSession(int sess)
     struct ext2_group_desc gd;
     struct ext2_inode inode;
     
-    lRetVal=getSuperBlock(sess);
+    lRetVal=readSuperBlock(sess);
     if (lRetVal)
         return lRetVal;
     
@@ -54,7 +63,7 @@ int initSession(int sess)
     sessions[sess].inodeBitmap.blockGroupNum=-1;
     sessions->blockBitmap.blockGroupBitmap=NULL;
     sessions->inodeBitmap.iNodeBitmap=NULL;
-    getBlockGroupDescriptor(sess, 0, &gd);
+    readBlockGroup(sess, 0, &gd);
     read_inode(sess,2,&sessions[sess].rootDirInode);
     //read_inode(sessions[sess].device,2,&gd,,4096,sessions[sess].blockSize, sessions[sess].superBlock.s_inode_size);
     return 0;

@@ -15,10 +15,8 @@ extern "C" {
 #define BLOCK_IS_IN_BUFFER(block) (block<globalBlockBufferStartBlock?false:block>globalBlockBufferStartBlock+READ_BUFFER_BLOCK_COUNT?false:true)
     
 #include "ext2.h"
-int ext2Read (int FILE, char* buffer, int bytes);
 void readDiskBlock(int sess, void* buffer, int block);
 void populateReadBuffer(int sess, int block, int blockSize);
-__attribute__((visibility("default"))) int ext2ReadN(int FILE, char* buffer, int bytes);
 
     char* blockBuffer;
 

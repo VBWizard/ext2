@@ -26,7 +26,7 @@ int mergeWriteWithBufferAndWrite(sFile* file, unsigned char* src, int bytes, int
     }
     offset=((block-globalBlockBufferStartBlock)*blockSize)+blockOffset;
     memcpy(globalBlockBuffer+offset,src,bytes);
-    writeDiskBlock(file->sess, globalBlockBuffer, block);
+    writeDiskBlock(file->sess, globalBlockBuffer+((block-globalBlockBufferStartBlock)*blockSize), block);
 
 }
 
@@ -41,7 +41,7 @@ int writeNewBlock(sFile* file, void* buffer, int writeSize)
     //need a new block
     writeDiskBlock(file->sess, localBuffer, block);
     //TODO: Update the inode's block list
-    
+    return block;
 
 }
 
@@ -63,16 +63,24 @@ int write (sFile* file, char* buffer, int bytes)
     //But if we are not writing to the end of the file, then don't write alignWriteSize
     if (writeSize>bytes) 
         writeSize=bytes;
-    
+    else if (writeSize==0)
+        writeSize=sessions[file->sess].blockSize;
     callerBufferPtr=0;
     
     while (bytesWritten<bytes)
     {
         if (file->blockList[file->offset/DISK_BLOCK_SIZE(file->sess)]!=0)
-            mergeWriteWithBufferAndWrite(file,buffer+callerBufferPtr,writeSize,file->offset,sessions[file->sess].blockSize);
+            mergeWriteWithBufferAndWrite(file,
+                    buffer+callerBufferPtr,
+                    writeSize,
+                    (file->offset%sessions[file->sess].blockSize),//offset within the block to write
+                    sessions[file->sess].blockSize);
         else
-            writeNewBlock(file, buffer+callerBufferPtr,writeSize);
-        
+        {
+            int newBlock=writeNewBlock(file, buffer+callerBufferPtr,writeSize);
+            updateFileBlockList(file,newBlock,true);
+            sessions[file->sess].superBlock.s_free_blocks_count--;
+        }
         //Increment the bytes written
         bytesWritten+=writeSize;
         //Increment the file's pointer
@@ -92,7 +100,8 @@ int write (sFile* file, char* buffer, int bytes)
     
     //TODO: Update last updated time stamp on file
     //file->inode.i_mtime=time;
-    updateInode(file);
+    updateFileInode(file);
+    writeSuperBlock(file->sess);
 
 }
 
@@ -104,7 +113,6 @@ int ext2write(int FILE, char* buffer, int bytes)
         return ERROR_INVALID_FILE_HANDLE;
     
     write(&fileHandles[FILE], buffer, bytes);
-    
 }
 
 /*int ext2Write (int FILE, char* buffer, int bytes)

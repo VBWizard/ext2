@@ -10,7 +10,9 @@
       <itemPath>include/ext2block.h</itemPath>
       <itemPath>include/ext2blockgroup.h</itemPath>
       <itemPath>include/ext2dir.h</itemPath>
+      <itemPath>include/ext2file.h</itemPath>
       <itemPath>include/ext2inode.h</itemPath>
+      <itemPath>include/ext2methods.h</itemPath>
       <itemPath>include/ext2read.h</itemPath>
       <itemPath>include/ext2session.h</itemPath>
       <itemPath>include/ext2utility.h</itemPath>
@@ -27,6 +29,7 @@
       <itemPath>src/ext2block.c</itemPath>
       <itemPath>src/ext2blockgroup.c</itemPath>
       <itemPath>src/ext2dir.c</itemPath>
+      <itemPath>src/ext2file.c</itemPath>
       <itemPath>src/ext2init.c</itemPath>
       <itemPath>src/ext2inode.c</itemPath>
       <itemPath>src/ext2main.c</itemPath>
@@ -81,7 +84,11 @@
       </item>
       <item path="include/ext2dir.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/ext2file.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="include/ext2inode.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/ext2methods.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ext2read.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -98,6 +105,8 @@
       <item path="src/ext2blockgroup.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2dir.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2file.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2init.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -152,7 +161,11 @@
       </item>
       <item path="include/ext2dir.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/ext2file.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="include/ext2inode.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/ext2methods.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ext2read.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -169,6 +182,8 @@
       <item path="src/ext2blockgroup.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2dir.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/ext2file.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/ext2init.c" ex="false" tool="0" flavor2="0">
       </item>

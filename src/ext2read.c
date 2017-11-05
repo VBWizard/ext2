@@ -31,7 +31,7 @@ void readDiskBlock(int sess, void* buffer, int block)
 }
 
 
-__attribute__((visibility("default"))) int ext2ReadN(int FILE, char* buffer, int bytes)
+int ext2read(int FILE, char* buffer, int bytes)
 {
     int realSize=bytes, readSize=0;
     int firstBlockOffset=0;
@@ -100,7 +100,8 @@ __attribute__((visibility("default"))) int ext2ReadN(int FILE, char* buffer, int
     freeF(blockBuffer);
     return bytesRead;
 }
-int ext2Read (int FILE, char* buffer, int bytes)
+/*
+ int ext2Read (int FILE, char* buffer, int bytes)
 {
     static char *iBuffer=NULL;
     int realSize=bytes, readSize=0;
@@ -161,3 +162,4 @@ int ext2Read (int FILE, char* buffer, int bytes)
     return realSize;
 }
 
+*/

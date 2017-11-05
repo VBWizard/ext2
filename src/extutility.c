@@ -48,10 +48,14 @@ unsigned short __attribute((noinline)) find_first_zero(unsigned int bit_array)
 }
 
 //Find the first zero in an array
-unsigned int bitmapFFZ(unsigned int* array, int size)
+unsigned int bitmapFFZ(unsigned int* array, int startIndex, int arraySize)
 {
     int index=0,a=0;
-    for (int cnt=0;cnt<size;cnt++)
+    int sIndex=startIndex/32;
+    
+    if (sIndex>=arraySize)
+        return -1; //Passed index points past the end of the array
+    for (int cnt=sIndex;cnt<arraySize;cnt++)
     {
 
         index=find_first_zero(~(array[cnt]));
@@ -59,7 +63,6 @@ unsigned int bitmapFFZ(unsigned int* array, int size)
         if (index!=0xFFFF)
             return cnt*(sizeof(unsigned int)*8)+(index);
     }
-    
     
     return -1;
 }

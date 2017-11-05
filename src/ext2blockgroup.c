@@ -25,7 +25,7 @@ void getBitmaps(int sess, int blockGroupNum, struct ext2_group_desc* gd)
         session->blockBitmap.blockGroupBlockCount=session->superBlock.s_blocks_per_group;
         if (session->blockBitmap.blockGroupBitmap!=NULL)
             freeF(session->blockBitmap.blockGroupBitmap);
-        readSize=session->blockBitmap.blockGroupBlockCount/(sizeof(int)*8);
+        readSize=session->blockSize;
         session->blockBitmap.blockGroupBitmap=mallocF(sessions[sess].blockSize);
         session->readFunction(bgBitmapLoc/DISK_SECTOR_SIZE,sessions[sess].blockBitmap.blockGroupBitmap,sectorsForByteCount(readSize));
         
@@ -45,18 +45,38 @@ void getBitmaps(int sess, int blockGroupNum, struct ext2_group_desc* gd)
 
 }
 
-void getBlockGroupDescriptor(int sess, int blockGroupNum, struct ext2_group_desc* gd)
+void getBlockGroupBuffer(int sess, int blockGroupNum, void* buffer)
 {
-    char buffer[1024];
-    
-    //int loc=sessions[sess].superBlock.s_blocks_per_group * blockGroupNum * sessions[sess].blockSize;
     int loc=sessions[sess].blockSize;
-    sessions[sess].readFunction(loc/DISK_SECTOR_SIZE,buffer,sectorsForByteCount(1024));
+    sessions[sess].readFunction(loc/DISK_SECTOR_SIZE,buffer,sectorsForByteCount(sessions[sess].blockSize));
+}
+
+void writeBlockGroupBuffer(int sess, int blockGroupNum, void* buffer)
+{
+    int loc=sessions[sess].blockSize;
+    sessions[sess].writeFunction(loc/DISK_SECTOR_SIZE,buffer,sectorsForByteCount(sessions[sess].blockSize));
+}
+
+void readBlockGroup(int sess, int blockGroupNum, struct ext2_group_desc* gd)
+{
+    char buffer[sessions[sess].blockSize];
+    
+    getBlockGroupBuffer(sess, blockGroupNum,buffer);
     int offset=0;
-    int a=sizeof(struct ext2_group_desc);
     offset=blockGroupNum*sizeof(struct ext2_group_desc);
     memcpy(gd,buffer+offset,sizeof(struct ext2_group_desc));
     getBitmaps(sess, blockGroupNum, gd);
+}
+
+int writeBlockGroup(int sess, int blockGroupNum, struct ext2_group_desc* gd)
+{
+    char buffer[sessions[sess].blockSize];
+
+    getBlockGroupBuffer(sess, blockGroupNum,buffer);
+    int offset=0;
+    offset=blockGroupNum*sizeof(struct ext2_group_desc);
+    memcpy(buffer+offset,gd,sizeof(struct ext2_group_desc));
+    writeBlockGroupBuffer(sess,blockGroupNum,buffer);
 }
 
 void updateBGBitmap(sFile* file, int blockGroupNum, int block, bool used)
@@ -64,7 +84,7 @@ void updateBGBitmap(sFile* file, int blockGroupNum, int block, bool used)
     struct ext2_group_desc blockGroup;
 
     //Get the descriptor for the block group that the node is in
-    getBlockGroupDescriptor(file->sess, blockGroupNum, &blockGroup);
+    readBlockGroup(file->sess, blockGroupNum, &blockGroup);
     if (used)
         bitmapSet(sessions[file->sess].blockBitmap.blockGroupBitmap,block);
     else

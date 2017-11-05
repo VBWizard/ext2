@@ -11,7 +11,7 @@ void calculateInodeLocation(int sess, int inode_no, int* inode_sector, int* inod
     struct ext2_group_desc blockGroup;
 
     //Get the descriptor for the block group that the node is in
-    getBlockGroupDescriptor(sess, blockGroupNumber, &blockGroup);
+    readBlockGroup(sess, blockGroupNumber, &blockGroup);
     
     //Calculate the inode table location within the block group
     inode_table_location=blockGroup.bg_inode_table*sessions[sess].blockSize;
@@ -39,6 +39,11 @@ int write_inode(sFile* file)
     int inode_sector, inode_sector_offset;
     char sectorBuffer[512];
     
+    //Needs to be divisible by block size
+    file->inode.i_blocks=file->inode.i_size/sessions[file->sess].blockSize;
+    if (file->inode.i_size%sessions[file->sess].blockSize)
+        file->inode.i_blocks++;
+    file->inode.i_blocks*=8; //we need 512 byte blocks not blockSize
     calculateInodeLocation(file->sess,file->inodeNumber,&inode_sector,&inode_sector_offset);
     read_inode_sector(file->sess,file->inodeNumber,sectorBuffer);
     memcpy(sectorBuffer+inode_sector_offset,&file->inode,sizeof(struct ext2_inode));
@@ -69,10 +74,3 @@ int read_inode(int sess, int inode_no, struct ext2_inode *inode)
     //Copy the inode from the sector buffer to the inode structure
     memcpy(inode,sector_buffer+inode_sector_offset,sizeof(struct ext2_inode));
 }
-
-int updateInode(sFile* file)
-{
-    write_inode(file);
-    
-}
-

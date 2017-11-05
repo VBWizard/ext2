@@ -6,7 +6,7 @@
 //Get the list of blocks for a file 
 int setFileBlockList(sFile *file)
 {
-    int blockListSize=0;
+    int blockListSize=12;
     int curr=0,currSaveBegin=0,currSaveEnd=0,currTempListPtr=0;
     unsigned int* lvl2BlockList;
     unsigned int* lvl3BlockList;
@@ -20,10 +20,9 @@ int setFileBlockList(sFile *file)
         if (file->inode.i_block[cnt]>0)
         {
             //First 12 pointer in the inode block list are block #s with data
-            if (cnt<12)
-                blockListSize++;
+            //We don't need to count these for blockListSize because it starts at 12
             //The 13th block number is an indirect block.  It points at an array of block IDs
-            else if (cnt==12)
+            if (cnt==12)
             {
                 blockListSize+=blockSize;
                 file->blockList12Used=true;
@@ -55,7 +54,7 @@ int setFileBlockList(sFile *file)
     for (int cnt=0;cnt<15;cnt++)
     {
         if (file->inode.i_block[cnt]==0)
-            break;
+            break;  //TODO: Fix this, it is wrong.  Blocks 12-14 can be used without blocks 0-11 being used
         if (cnt<12)
             file->blockList[curr++]=file->inode.i_block[cnt];
         else if (cnt==12)
@@ -132,7 +131,7 @@ int allocateBlock(sFile* file)
     struct ext2_group_desc blockGroup;
 
     //Get the descriptor for the block group that the node is in
-    getBlockGroupDescriptor(file->sess, blockGroupNumber, &blockGroup);
+    readBlockGroup(file->sess, blockGroupNumber, &blockGroup);
 
 /*    //Find the maximum block used for the file's inode
     int maxBlockUsed=arrayMaxValue(file->blockList,file->usedBlockListCount);
@@ -147,10 +146,12 @@ int allocateBlock(sFile* file)
   */  
     
     //Find the first unused block in the block group
-    int blockListFreeBlock=bitmapFFZ(sessions[file->sess].blockBitmap.blockGroupBitmap,sessions[file->sess].blockSize);
+    int startIndex=findMaxBlockNumInBlockList(file);
+    int blockListFreeBlock=bitmapFFZ(sessions[file->sess].blockBitmap.blockGroupBitmap, startIndex+1, sessions[file->sess].blockSize);
     int groupBlock=blockListFreeBlock+(blockGroupNumber*sessions[file->sess].superBlock.s_blocks_per_group);
 
     updateBGBitmap(file, blockGroupNumber, groupBlock, true);
-    
+    blockGroup.bg_free_blocks_count--;
+    writeBlockGroup(file->sess,blockGroupNumber,&blockGroup);
     return groupBlock;
 }

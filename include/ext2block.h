@@ -13,7 +13,8 @@ extern "C" {
 #endif
 
 #include "ext2.h"
-
+#include "ext2file.h"
+    
     int setFileBlockList(sFile *file);
     int allocateBlock(sFile* file);
 

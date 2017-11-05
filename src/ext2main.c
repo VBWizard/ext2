@@ -135,7 +135,10 @@ int ext2open (int sess, char* fileName)
         file=lResult;
     }
     else
+    {
         fileHandles[file].base=fileHandles[file].inode.i_block[0]*sessions[sess].blockSize;
+        fileHandles[file].eofOffset=fileHandles[file].inode.i_size;
+    }
     return file;
 }
 

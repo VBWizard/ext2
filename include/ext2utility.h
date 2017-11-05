@@ -13,10 +13,11 @@ extern "C" {
 #endif
 
 #include "ext2.h"
+#include "ext2file.h"
     
     int sectorsForByteCount(int bytes);
     bool invalidFileHandle(int FILE);
-    unsigned int bitmapFFZ(unsigned int* array, int size);
+    unsigned int bitmapFFZ(unsigned int* array, int startIndex, int size);
     int arrayMaxValue(unsigned int* array, size_t arraySize);
     int bitmapSet(unsigned int* array, int index);
     int bitmapUnSet(unsigned int* array, int index);
